@@ -1,128 +1,26 @@
 import styled from 'styled-components/macro';
 import { useState } from 'react';
+import PlayerForm from './PlayerForm';
+import PlayerCard from './PlayerCard';
 
 function App() {
-  const initialPlayer = {
-    name: '',
-    price: '',
-    free_transfer: false,
-    club: '',
-    position: '',
-    email: '',
-  };
+  const [players, setPlayers] = useState([]);
 
-  const [player, setPlayer] = useState(initialPlayer);
-
-  function updatePlayer(event) {
-    const fieldName = event.target.name;
-    let fieldValue = event.target.value;
-
-    if (event.target.type === 'checkbox') {
-      fieldValue = event.target.checked;
-    }
-
-    setPlayer({ ...player, [fieldName]: fieldValue });
-  }
-
-  function addPlayer(event) {
-    event.preventDefault();
-    console.log('Add This Player', player);
+  function addPlayers(player) {
+    setPlayers([...players, player]);
   }
 
   return (
     <div className="App">
       <Headline>Add New Player</Headline>
-
-      <Form onSubmit={addPlayer}>
-        <label htmlFor="name">Player Name</label>
-        <input
-          type="text"
-          name="name"
-          onChange={updatePlayer}
-          value={player.name}
-        />
-
-        <label htmlFor="price">Transfer Price (in €)</label>
-        <input
-          type="text"
-          name="price"
-          value={player.price}
-          onChange={updatePlayer}
-          disabled={player.free_transfer}
-        />
-
-        <label htmlFor="free_transfer">Free transfer?</label>
-        <input
-          type="checkbox"
-          name="free_transfer"
-          value={player.free_transfer}
-          onChange={updatePlayer}
-          checked={player.free_transfer}
-          disabled={player.price.length >= 1}
-        />
-
-        <label htmlFor="club">Club</label>
-        <select
-          name="club"
-          id="club"
-          value={player.club}
-          onChange={updatePlayer}
-        >
-          <option value="">Select the Club</option>
-          <option value="fc_bayern">FC Bayern</option>
-          <option value="st_pauli">St Pauli</option>
-          <option value="fc_arsenal">FC Arsenal</option>
-          <option value="man_city">Manchester City</option>
-          <option value="fc_barcelona">FC Barcelona</option>
-          <option value="psg">Paris Saint-Germain</option>
-          <option value="fc_liverpool">FC Liverpool</option>
-          <option value="juventus">Juventus Turin</option>
-        </select>
-
-        <label htmlFor="position">Position</label>
-        <Position>
-          <input
-            type="radio"
-            name="position"
-            value="striker"
-            onChange={updatePlayer}
-            checked={player.position === 'striker'}
-          />{' '}
-          Striker
-          <input
-            type="radio"
-            name="position"
-            value="midfield"
-            onChange={updatePlayer}
-            checked={player.position === 'midfield'}
-          />{' '}
-          Midfield
-          <input
-            type="radio"
-            name="position"
-            value="defence"
-            onChange={updatePlayer}
-            checked={player.position === 'defence'}
-          />{' '}
-          Defence
-          <input
-            type="radio"
-            name="position"
-            value="goalie"
-            onChange={updatePlayer}
-            checked={player.position === 'goalie'}
-          />{' '}
-          Goalie
-        </Position>
-        <label htmlFor="email">Contact</label>
-        <input type="email" name="email" onChange={updatePlayer} />
-        <Buttons>
-          <Button isPrimary type="submit">
-            Add
-          </Button>
-          <Button type="cancel">Cancel</Button>
-        </Buttons>
-      </Form>
+      <Grid>
+        <PlayerForm onAddPlayer={addPlayers} />
+        <PlayerCards>
+          {players.map((player) => (
+            <PlayerCard player={player} />
+          ))}
+        </PlayerCards>
+      </Grid>
     </div>
   );
 }
@@ -135,47 +33,18 @@ const Headline = styled.h1`
   color: #9e37a2;
 `;
 
-const Form = styled.form`
+const Grid = styled.div`
   display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 576px) {
+    grid-template-columns: 2fr 3fr;
+  }
+`;
+
+const PlayerCards = styled.div`
+  display: flex;
+  flex-flow: row wrap;
   gap: 0.5rem;
-  margin: 0 auto;
-  width: 16rem;
-
-  label {
-    font-weight: bold;
-    font-family: sans-serif;
-    margin-bottom: 0.5rem;
-  }
-  input,
-  select {
-    display: flex;
-    font-size: 1.125rem;
-    font-family: sans-serif;
-    margin-bottom: 1.5rem;
-  }
-  input[type='checkbox'],
-  input[type='radio'] {
-    transform: scale(1.4);
-  }
-`;
-
-const Position = styled.section`
-  display: flex;
-  gap: 1rem;
-`;
-const Buttons = styled.section`
-  display: flex;
-  gap: 1rem;
-  padding: 2rem 0;
-`;
-const Button = styled.button`
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background: none;
-  cursor: pointer;
-  border: none;
-  font-size: 1.2rem;
-  width: 10rem;
-  background: ${(props) => (props.isPrimary ? '#9e37a2' : 'none')};
-  color: white;
 `;
