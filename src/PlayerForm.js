@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import Tags from './Tags';
 
 export default function PlayerForm({ onAddPlayer }) {
   const initialPlayer = {
@@ -9,6 +10,7 @@ export default function PlayerForm({ onAddPlayer }) {
     club: '',
     position: '',
     email: '',
+    skills: [],
   };
 
   const [player, setPlayer] = useState(initialPlayer);
@@ -27,6 +29,18 @@ export default function PlayerForm({ onAddPlayer }) {
   function handleFormSubmit(event) {
     event.preventDefault();
     onAddPlayer(player);
+  }
+
+  function updateSkills(newSkill) {
+    setPlayer({
+      ...player,
+      skills: [...player.skills, newSkill.toUpperCase()],
+    });
+  }
+  //filter geht nur auf array, nicht auf objekt!
+  function removeTag(removeTag) {
+    const remainingItems = player.skills.filter((skill) => skill !== removeTag);
+    setPlayer({ ...player, skills: [...remainingItems] });
   }
 
   return (
@@ -61,14 +75,14 @@ export default function PlayerForm({ onAddPlayer }) {
       <label htmlFor="club">Club</label>
       <select name="club" id="club" value={player.club} onChange={updatePlayer}>
         <option value="">Select the Club</option>
-        <option value="FC Bayern München">FC Bayern</option>
-        <option value="St. Pauli">St Pauli</option>
-        <option value="FC Arsenal">FC Arsenal</option>
-        <option value="Manchester city">Manchester City</option>
-        <option value="FC Barcelona">FC Barcelona</option>
-        <option value="Paris Saint-Germain">Paris Saint-Germain</option>
-        <option value="FC Liverpool">FC Liverpool</option>
-        <option value="Juventus Turin">Juventus Turin</option>
+        <option value="fc_bayern">FC Bayern</option>
+        <option value="st_pauli">St Pauli</option>
+        <option value="fc_arsenal">FC Arsenal</option>
+        <option value="man_city">Manchester City</option>
+        <option value="fc_barcelona">FC Barcelona</option>
+        <option value="psg">Paris Saint-Germain</option>
+        <option value="fc_liverpool">FC Liverpool</option>
+        <option value="juventus">Juventus Turin</option>
       </select>
 
       <label htmlFor="position">Position</label>
@@ -106,6 +120,11 @@ export default function PlayerForm({ onAddPlayer }) {
         />{' '}
         Goalie
       </Position>
+      <Tags
+        onRemoveTag={removeTag}
+        onUpdateSkills={updateSkills}
+        tags={player.skills}
+      />
       <label htmlFor="email">Contact</label>
       <input type="email" name="email" onChange={updatePlayer} />
       <Buttons>
@@ -145,6 +164,7 @@ const Form = styled.form`
 const Position = styled.section`
   display: flex;
   gap: 1rem;
+  font-family: sans-serif;
 `;
 const Buttons = styled.section`
   display: flex;

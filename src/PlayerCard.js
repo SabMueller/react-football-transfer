@@ -2,6 +2,29 @@ import styled from 'styled-components';
 import shoppingCart from './images/shopping-cart.svg';
 
 export default function PlayerCard({ player }) {
+  function clubName(player) {
+    switch (player.club) {
+      case 'fc_bayern':
+        return 'FC Bayern München'; //in Vanilla JS bräuchte man noch break;
+      case 'man_city':
+        return 'Manchester City';
+      case 'st_pauli':
+        return 'St. Pauli';
+      case 'fc_arsenal':
+        return 'FC Arsenal';
+      case 'fc_barcelona':
+        return 'FC Barcelona';
+      case 'psg':
+        return 'Paris Saint-Germain';
+      case 'fc_liverpool':
+        return 'FC Liverpool';
+      case 'juventus':
+        return 'Juventus Turin';
+      default:
+        return 'kein Verein';
+    }
+  }
+
   return (
     <Card>
       <TopWrapper>
@@ -10,7 +33,12 @@ export default function PlayerCard({ player }) {
       </TopWrapper>
       <p>{player.position.toUpperCase()}</p>
       <p>{player.free_transfer ? 'free transfer' : player.price + ' €'}</p>
-      <p>{player.club.toUpperCase()}</p>
+      <p>{clubName(player)}</p>
+      <p>
+        {player.skills.map((skill, index) => (
+          <span key={index + skill}>{skill} </span>
+        ))}
+      </p>
 
       <p>
         {' '}
@@ -24,7 +52,7 @@ const Card = styled.article`
   border-radius: 0.4rem;
   color: white;
   padding: 1.2rem 1rem;
-  height: 14rem;
+  height: 15rem;
   min-width: calc((100% - 2rem) / 3);
   box-shadow: 1px 1px 3px black;
   font-family: sans-serif;
@@ -49,4 +77,10 @@ const TopWrapper = styled.div`
 
 const Img = styled.img`
   width: 30px;
+  opacity: 25%;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 100%;
+  }
 `;

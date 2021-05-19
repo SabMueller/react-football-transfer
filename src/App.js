@@ -16,8 +16,8 @@ function App() {
       <Grid>
         <PlayerForm onAddPlayer={addPlayers} />
         <PlayerCards>
-          {players.map((player) => (
-            <PlayerCard player={player} />
+          {players.map((player, index) => (
+            <PlayerCard key={index + player} player={player} />
           ))}
         </PlayerCards>
       </Grid>
