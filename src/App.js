@@ -1,13 +1,19 @@
 import styled from 'styled-components/macro';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PlayerForm from './PlayerForm';
 import PlayerCard from './PlayerCard';
+import { saveToLocal, loadFromLocal } from './lib/localStorage';
 
 function App() {
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState(loadFromLocal('players') ?? []);
+
+  useEffect(() => {
+    saveToLocal('players', players);
+  }, [players]);
 
   function addPlayers(player) {
     setPlayers([...players, player]);
+    /*     saveToLocal('players', players);  da wir pure functions wollen sollten wir useEffect verwenden für diesen Ausdurck*/
   }
 
   return (

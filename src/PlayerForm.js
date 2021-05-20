@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import Tags from './Tags';
+import validatePlayer from './lib/Validation';
 
 export default function PlayerForm({ onAddPlayer }) {
   const initialPlayer = {
@@ -14,6 +15,7 @@ export default function PlayerForm({ onAddPlayer }) {
   };
 
   const [player, setPlayer] = useState(initialPlayer);
+  const [isError, setIsError] = useState(false);
 
   function updatePlayer(event) {
     const fieldName = event.target.name;
@@ -26,9 +28,36 @@ export default function PlayerForm({ onAddPlayer }) {
     setPlayer({ ...player, [fieldName]: fieldValue });
   }
 
+  /*   const validateName = (player) => 
+    player.name.length >= 2; //true oder false */
+
+  /*  const validateName = (name) => name.length >= 2;
+  const validateEmail = (email) =>
+    email.includes('@') && (email.endsWith('.com') || email.endsWith('.de')); //regular Expressions
+  const validatePrice = (price, free_transfer) =>
+    (parseFloat(price) > 0 && !free_transfer) || free_transfer; 4. const auslagern*/
+
+  /*  const validatePlayer = (player) =>
+    validateName(player.name) &&
+    validateEmail(player.email) &&
+    validatePrice(player.price, player.free_transfer); 2. als funktion 3. funktion auslagern*/
+
   function handleFormSubmit(event) {
     event.preventDefault();
-    onAddPlayer(player);
+    if (
+      validatePlayer(player)
+      /*       validateName(player.name) &&
+      validateEmail(player.email) &&
+      validatePrice(player.price, player.free_transfer) 1.im body*/
+    ) {
+      //auch oder || möglich
+      onAddPlayer(player);
+      setPlayer(initialPlayer);
+      setIsError(false);
+    } else {
+      setIsError(true);
+      setTimeout(() => setIsError(false), 2000); //error box wird nach einiger zeit verschwinden
+    }
   }
 
   function updateSkills(newSkill) {
@@ -45,6 +74,10 @@ export default function PlayerForm({ onAddPlayer }) {
 
   return (
     <Form onSubmit={handleFormSubmit}>
+      {isError ? <ErrorBox> HALT STOP!! SO NICHT!!</ErrorBox> : null}
+      {/*       {isError && <ErrorBox> You have an error in your form</ErrorBox>}  
+IST DASSELBE WIE ZEILE 58, wenn isError true ist dann wird ErrorBox gemalt, wenn isError false ist kann andere seite nie true werden, JS
+hört dann direkt nach false-Abfrage auf, weil falsch und richtig niemals richtig werden kann (SIEHE CONDITIONAL RENDERING)*/}
       <label htmlFor="name">Player Name</label>
       <input
         type="text"
@@ -181,4 +214,15 @@ const Button = styled.button`
   width: 10rem;
   background: ${(props) => (props.isPrimary ? '#9e37a2' : 'none')};
   color: white;
+`;
+
+const ErrorBox = styled.div`
+  background: darkred;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: bold;
+  font-family: sans-serif;
+  text-align: center;
+  box-shadow: 1px 1px 2px black;
 `;
